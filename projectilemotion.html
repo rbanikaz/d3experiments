@@ -1,0 +1,47 @@
+<html>
+<head>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+</head>
+<body>
+
+<script>
+
+var data = [];
+
+var v0 = 50;
+var x0 = 0;
+var y0 = 50;
+var theta = Math.PI / 4;
+var g = 9.8;
+
+var xMax=50;
+var step = 0.5;
+
+var screenSize = 500;
+
+for(var t = 0; t < xMax; t += step) {
+  var x = v0 * t * Math.cos(theta) + x0;
+  var y = screenSize - (v0 * t * Math.sin(theta) - 0.5 * g * t * t + y0);
+  //console.log("( " + x + ", " + y + " )");
+  data.push({x: x, y: y});
+}
+
+console.log(data);
+var line = d3.svg.line()
+              .y(function(d) { return d.y; })
+              .x(function(d) { return d.x; })
+              .interpolate("linear");
+
+var svg = d3.select("body").append("svg")
+                           .attr("width", screenSize)
+                           .attr("height", screenSize);
+
+svg.append("path")
+   .attr("d", line(data))
+   .attr("stroke", "blue")
+   .attr("stroke-width", 2)
+   .attr("fill", "none");                         
+</script>
+</body>
+</html>
