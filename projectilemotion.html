@@ -22,6 +22,9 @@
             h3 { font-family: flexo-medium; }
             #frame { width: 900px; margin:0 auto; padding:10px; border:1px solid #eee; }
             .alert { font-family: flexo-medium; }
+            .input-group-addon {
+              width: 50px;
+            }
             p { font-family: arial; }
   </style>
 
@@ -40,7 +43,7 @@
         <br/><br/><br/><br/>
         <div class="input-group">
           <span class="input-group-addon">v0</span>
-          <input type="text" class="form-control" id='v0' value='50'>
+          <input type="number" step="1" min=0 max=100 class="form-control" id='v0' value='50'>
         </div>
         <!-- div class="input-group">
           <span class="input-group-addon">x0</span>
@@ -52,10 +55,10 @@
         </div -->
         <div class="input-group">
           <span class="input-group-addon">&theta;&nbsp;</span>
-          <input type="text" class="form-control" id='theta' value='45'>
+          <input type="number" step="1" min=0 max=90 class="form-control" id='theta' value='45'>
         </div>
         <div>
-          <button type="button" class="btn btn-default" onclick='runSimulation()' >Run</button>
+          <button class="btn btn-default" onclick='runSimulation()' >Run</button>
         </div>
   </div>
   <script>
@@ -109,7 +112,8 @@ function runSimulation() {
      .ease("linear-in-out")
      .attr("stroke-dashoffset", 0);
                             
-}
+};
+runSimulation();
 </script>
 </body>
 </html>
