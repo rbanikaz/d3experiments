@@ -1,47 +1,115 @@
-<html>
+<!DOCTYPE html>
+<html lang='en'>
 <head>
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<title>Projectile Motion</title>
+  <link href="http://cdn.xadcentral.com/content/web/bootstrap-3.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- script src="http://cdn.xadcentral.com/content/web/bootstrap-3.0.0/dist/js/bootstrap.min.js"></script -->
+   <style>
+            @font-face
+            {
+                font-family: flexo-medium;
+                src: url(http://cdn.xadcentral.com/developer/images/Flexo-Medium.otf);
+            }
+
+            @font-face
+            {
+                font-family: bebas-neue;
+                src: url(http://cdn.xadcentral.com/developer/images/BebasNeue.otf);
+            }
+
+            h1 { font-family: bebas-neue; }
+            h2 { font-family: flexo-medium; }
+            h3 { font-family: flexo-medium; }
+            #frame { width: 900px; margin:0 auto; padding:10px; border:1px solid #eee; }
+            .alert { font-family: flexo-medium; }
+            p { font-family: arial; }
+  </style>
+
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
 </head>
 <body>
+  <div id='frame'>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class='container'>
+                <div class='navbar-header'>
+                    <a class="navbar-brand" href="#">Projectile Motion</a>
+                 </div>
+            </div>
+        </div>
+        <br/><br/><br/><br/>
+        <div class="input-group">
+          <span class="input-group-addon">v0</span>
+          <input type="text" class="form-control" id='v0' value='50'>
+        </div>
+        <!-- div class="input-group">
+          <span class="input-group-addon">x0</span>
+          <input type="text" class="form-control" id='x0' value='0'>
+        </div>
+         <div class="input-group">
+          <span class="input-group-addon">y0</span>
+          <input type="text" class="form-control" id='y0' value='50'>
+        </div -->
+        <div class="input-group">
+          <span class="input-group-addon">&theta;&nbsp;</span>
+          <input type="text" class="form-control" id='theta' value='45'>
+        </div>
+        <div>
+          <button type="button" class="btn btn-default" onclick='runSimulation()' >Run</button>
+        </div>
+  </div>
+  <script>
+function runSimulation() {
+  var data = [];
 
-<script>
+  var v0 = document.getElementById("v0").value;
+  var x0 = 0;//document.getElementById("x0").value;
+  var y0 = 0;//document.getElementById("y0").value;
+  var theta = document.getElementById("theta").value * Math.PI / 180;
+  var g = 9.8;
 
-var data = [];
+  console.log("v0: "+v0+", x0: "+x0+", y0: "+y0+", theta: "+theta);
+  var xMax=50;
+  var step = 0.5;
 
-var v0 = 50;
-var x0 = 0;
-var y0 = 50;
-var theta = Math.PI / 4;
-var g = 9.8;
+  var screenHeight = 200;
+  var screenWidth = 900;
 
-var xMax=50;
-var step = 0.5;
+  for(var t = 0; t < xMax; t += step) {
+    var x = v0 * t * Math.cos(theta) + x0;
+    var y = screenHeight - (v0 * t * Math.sin(theta) - 0.5 * g * t * t + y0);
+    console.log("( " + x + ", " + y + " )");
+    data.push({x: x, y: y});
+  }
 
-var screenSize = 500;
+  console.log(data);
+  var line = d3.svg.line()
+                .y(function(d) { return d.y; })
+                .x(function(d) { return d.x; })
+                .interpolate("linear");
+  d3.select(".screen").remove();;
+  var svg = d3.select("#frame").append("svg")
+                             .attr("class", "screen")
+                             .attr("width", screenWidth)
+                             .attr("height", screenHeight);
 
-for(var t = 0; t < xMax; t += step) {
-  var x = v0 * t * Math.cos(theta) + x0;
-  var y = screenSize - (v0 * t * Math.sin(theta) - 0.5 * g * t * t + y0);
-  //console.log("( " + x + ", " + y + " )");
-  data.push({x: x, y: y});
+  var path = svg.append("path")
+     .attr("d", line(data))
+     .attr("stroke", "blue")
+     .attr("stroke-width", 2)
+     .attr("fill", "none")
+
+  
+   var totalLength = path.node().getTotalLength();
+   path
+     .attr("stroke-dasharray", totalLength+","+totalLength)
+     .attr("stroke-dashoffset", totalLength)
+     .transition()
+     .duration(v0 * 250)
+     .ease("linear-in-out")
+     .attr("stroke-dashoffset", 0);
+                            
 }
-
-console.log(data);
-var line = d3.svg.line()
-              .y(function(d) { return d.y; })
-              .x(function(d) { return d.x; })
-              .interpolate("linear");
-
-var svg = d3.select("body").append("svg")
-                           .attr("width", screenSize)
-                           .attr("height", screenSize);
-
-svg.append("path")
-   .attr("d", line(data))
-   .attr("stroke", "blue")
-   .attr("stroke-width", 2)
-   .attr("fill", "none");                         
 </script>
 </body>
 </html>
